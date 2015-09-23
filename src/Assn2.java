@@ -57,7 +57,7 @@ public class Assn2 {
 				if (characterMap.containsKey(c)) {
 					sb.append(characterMap.get(c));
 				} else {
-					sb.append(c);
+					sb.append(' ');
 				}
 			}
 			System.out.println(text);

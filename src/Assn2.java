@@ -9,7 +9,7 @@ public class Assn2 {
 		try {
 			TextAnalyze tx = new TextAnalyze("ciphertext2.txt");
 			tx.frequencyCount();
-			//tx.getCharacterMap("key2.txt");
+			// tx.getCharacterMap("key2.txt");
 			tx.repeatingSubStrings(2);
 			tx.repeatingSubStrings(3);
 			tx.repeatingSubStrings(4);
@@ -236,7 +236,7 @@ public class Assn2 {
 
 			br.close();
 			fr.close();
-			
+
 			for (int k = 0; k < cipher.length; ++k) {
 				for (int l = 0; l < cipher[k].length; ++l) {
 					System.out.print(cipher[k][l] + " ");
@@ -255,26 +255,19 @@ public class Assn2 {
 				CipherNode c2n = mc.get(c2);
 
 				if (c1n.x == c2n.x) { // same row
-					if (c1n.y < c2n.y) {
-						sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
-						sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
-					} else {
-						sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
-						sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
-					}
+					sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
+					sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
 				} else if (c1n.y == c2n.y) { // same column
-					if (c1n.x < c2n.x) {
-						sb.append(cipher[(c1n.x + 4) % 5][c1n.y]);
-						sb.append(cipher[(c2n.x + 4) % 5][c2n.y]);
-					} else {
-						sb.append(cipher[(c2n.x + 4) % 5][c2n.y]);
-						sb.append(cipher[(c1n.x + 4) % 5][c1n.y]);
-					}
+					sb.append(cipher[(c1n.x + 4) % 5][c1n.y]);
+					sb.append(cipher[(c2n.x + 4) % 5][c2n.y]);
 				} else {
 					sb.append(cipher[c1n.x][c2n.y]);
 					sb.append(cipher[c2n.x][c1n.y]);
 				}
+				sb.append(' ');
+				System.out.print(c1 + "" + c2 + " ");
 			}
+			System.out.println();
 			System.out.println(sb.toString());
 		}
 	}

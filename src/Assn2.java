@@ -254,6 +254,12 @@ public class Assn2 {
 				CipherNode c1n = mc.get(c1);
 				CipherNode c2n = mc.get(c2);
 
+				System.out.print(c1 + "" + c2 + " ");
+				if (c1n == null || c2n == null) {
+					sb.append("__ ");
+					continue;
+				}
+
 				if (c1n.x == c2n.x) { // same row
 					sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
 					sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
@@ -265,7 +271,6 @@ public class Assn2 {
 					sb.append(cipher[c2n.x][c1n.y]);
 				}
 				sb.append(' ');
-				System.out.print(c1 + "" + c2 + " ");
 			}
 			System.out.println();
 			System.out.println(sb.toString());

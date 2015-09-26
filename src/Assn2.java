@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -6,16 +7,19 @@ import java.util.*;
 public class Assn2 {
 	public static void main(String[] args) {
 		try {
-			TextAnalyze tx = new TextAnalyze("ciphertext.txt");
+			TextAnalyze tx = new TextAnalyze("ciphertext2.txt");
 			tx.frequencyCount();
-			tx.getCharacterMap("key.txt");
-			/*tx.repeatingSubStrings(2);
+			//tx.getCharacterMap("key2.txt");
+			tx.repeatingSubStrings(2);
 			tx.repeatingSubStrings(3);
 			tx.repeatingSubStrings(4);
-			tx.repeatingSubStrings(5);*/
-			//tx.repeatingSubStrings(7);
+			tx.repeatingSubStrings(5);
+			tx.repeatingSubStrings(6);
+			tx.getKey("key2.txt");
+			tx.decryptPlayFair();
+			// tx.repeatingSubStrings(7);
 			// tx.getDefaultCharacterMap();
-			//tx.printCharacterMap();
+			// tx.printCharacterMap();
 			tx.translateFromCharacterMap();
 			// tx.bruteForce();
 			// tx.getCharacterMap("key.txt");
@@ -191,7 +195,7 @@ public class Assn2 {
 			for (int i = 0; i <= (text.length() - length); ++i) {
 				String sb = text.substring(i, i + length);
 				if (sc.containsKey(sb)) {
-					StringNode sn  = sc.get(sb);
+					StringNode sn = sc.get(sb);
 					sn.incrementCount();
 				} else {
 					StringNode sn = new StringNode(sb);
@@ -206,6 +210,72 @@ public class Assn2 {
 				System.out.println(sn.getChar() + " " + sn.getCount());
 			}
 			System.out.println();
+		}
+
+		/* Playfair cipher utilities */
+		Map<Character, CipherNode> mc;
+		char[][] cipher;
+
+		public void getKey(String filename) throws IOException {
+			mc = new HashMap<Character, CipherNode>();
+			cipher = new char[5][5];
+			FileReader fr = new FileReader(filename);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			StringBuffer sb = new StringBuffer();
+
+			int i = 0;
+			while ((line = br.readLine()) != null) {
+				for (int j = 0; j < line.length(); ++j) {
+					char c = line.charAt(j);
+					mc.put(c, new CipherNode(c, i, j));
+					cipher[i][j] = c;
+				}
+				++i;
+			}
+
+			br.close();
+			fr.close();
+			
+			for (int k = 0; k < cipher.length; ++k) {
+				for (int l = 0; l < cipher[k].length; ++l) {
+					System.out.print(cipher[k][l] + " ");
+				}
+				System.out.println();
+			}
+		}
+
+		public void decryptPlayFair() {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < text.length(); i += 2) {
+				char c1 = text.charAt(i);
+				char c2 = text.charAt(i + 1);
+
+				CipherNode c1n = mc.get(c1);
+				CipherNode c2n = mc.get(c2);
+
+				if (c1n.x == c2n.x) { // same row
+					if (c1n.y < c2n.y) {
+						sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
+						sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
+					} else {
+						sb.append(cipher[c2n.x][(c2n.y + 4) % 5]);
+						sb.append(cipher[c1n.x][(c1n.y + 4) % 5]);
+					}
+				} else if (c1n.y == c2n.y) { // same column
+					if (c1n.x < c2n.x) {
+						sb.append(cipher[(c1n.x + 4) % 5][c1n.y]);
+						sb.append(cipher[(c2n.x + 4) % 5][c2n.y]);
+					} else {
+						sb.append(cipher[(c2n.x + 4) % 5][c2n.y]);
+						sb.append(cipher[(c1n.x + 4) % 5][c1n.y]);
+					}
+				} else {
+					sb.append(cipher[c1n.x][c2n.y]);
+					sb.append(cipher[c2n.x][c1n.y]);
+				}
+			}
+			System.out.println(sb.toString());
 		}
 	}
 
@@ -252,13 +322,25 @@ public class Assn2 {
 			++count;
 		}
 	}
-	
+
+	public static class CipherNode {
+		char c;
+		int x;
+		int y;
+
+		public CipherNode(char c, int x, int y) {
+			this.c = c;
+			this.x = x;
+			this.y = y;
+		}
+	}
+
 	public static class StringNodeCompare implements Comparator<StringNode> {
 		public int compare(StringNode a, StringNode b) {
 			return b.count - a.count;
 		}
 	}
-	
+
 	public static class FreqCountNodeCompare implements Comparator<FreqCountNode> {
 		public int compare(FreqCountNode a, FreqCountNode b) {
 			return b.count - a.count;

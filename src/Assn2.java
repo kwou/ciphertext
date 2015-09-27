@@ -9,12 +9,12 @@ public class Assn2 {
 		try {
 			TextAnalyze tx = new TextAnalyze("ciphertext2.txt");
 			tx.frequencyCount();
-			// tx.getCharacterMap("key2.txt");
-			tx.repeatingSubStrings(2);
-			tx.repeatingSubStrings(3);
-			tx.repeatingSubStrings(4);
-			tx.repeatingSubStrings(5);
-			tx.repeatingSubStrings(6);
+			//tx.getCharacterMap("key.txt");
+			/*tx.repeatingSubStringsPF(2);
+			tx.repeatingSubStringsPF(3);
+			tx.repeatingSubStringsPF(4);*/
+			//tx.repeatingSubStrings(5);
+			//tx.repeatingSubStrings(6);
 			tx.getKey("key2.txt");
 			tx.decryptPlayFair();
 			// tx.repeatingSubStrings(7);
@@ -61,7 +61,7 @@ public class Assn2 {
 				if (characterMap.containsKey(c)) {
 					sb.append(characterMap.get(c));
 				} else {
-					sb.append(' ');
+					sb.append('_');
 				}
 			}
 			System.out.println(text);
@@ -93,10 +93,10 @@ public class Assn2 {
 					continue;
 				char key = line.charAt(0);
 				char value = line.charAt(2);
-				if (value >= 'A' && value <= 'Z') {
+				/*if (value >= 'A' && value <= 'Z') {
 					value = (char) ((int) line.charAt(2) - diff); // convert to
 																	// lowercase
-				}
+				}*/
 				characterMap.put(key, value);
 			}
 			br.close();
@@ -158,7 +158,7 @@ public class Assn2 {
 			Collections.sort(l, new FreqCountNodeCompare());
 
 			for (FreqCountNode node : l) {
-				System.out.format("%c : %-3s ", node.getChar(), node.getCount());
+				System.out.format("%c : %-3s [%5.2f%% ] ", node.getChar(), node.getCount(), (((double)node.getCount()) / text.length()) * 100);
 				double count = (double) node.getCount();
 				// System.out.println("Count: " + count + " " + ((int)(count
 				// *30)));
@@ -193,6 +193,31 @@ public class Assn2 {
 			System.out.println();
 			System.out.println("Length: " + length);
 			for (int i = 0; i <= (text.length() - length); ++i) {
+				String sb = text.substring(i, i + length);
+				if (sc.containsKey(sb)) {
+					StringNode sn = sc.get(sb);
+					sn.incrementCount();
+				} else {
+					StringNode sn = new StringNode(sb);
+					sn.incrementCount();
+					sc.put(sb, sn);
+				}
+			}
+
+			List<StringNode> l = new ArrayList<StringNode>(sc.values());
+			Collections.sort(l, new StringNodeCompare());
+			for (StringNode sn : l) {
+				System.out.println(sn.getChar() + " " + sn.getCount());
+			}
+			System.out.println();
+		}
+		
+		public void repeatingSubStringsPF(int length) {
+			Map<String, StringNode> sc = new HashMap<String, StringNode>();
+
+			System.out.println();
+			System.out.println("Length: " + length);
+			for (int i = 0; i <= (text.length() - length); i += 2) {
 				String sb = text.substring(i, i + length);
 				if (sc.containsKey(sb)) {
 					StringNode sn = sc.get(sb);
